@@ -22,4 +22,9 @@
   <ItemGroup>
     <None Include="SimpleFirstGame.ruleset" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SimpleFirstGame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>
