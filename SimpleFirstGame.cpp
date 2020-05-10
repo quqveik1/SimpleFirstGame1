@@ -2,23 +2,24 @@
 
 namespace Draw
 {
-void drawPers   (int x, int y, int scale);
-void drawEnemy  (int x, int y, int scale);
-void draw2Pers  (int x, int y, int scale);
-void draw3Pers  (int x, int y, int scale);
-void draw3Enemy (int x, int y, int scale);
-void draw2Enemy (int x, int y, int scale);
-void drawBackground();
-void drawScene();
+void CircleSquarePers   (int x, int y, int scale, int handsUp);
+void SquareEnemy  (int x, int y, int scale, int handsUp);
+void TrianglePers  (int x, int y, int scale, int headRight);
+void CircleLinePers (int x, int y, int scale, int handsUp, int legsUp);
+void CircleLineEnemy (int x, int y, int scale, int handsUp, int legsUp);
+void TriangleEnemy (int x, int y, int scale, int headRight);
+void Background();
+void Scene();
 }
 
 namespace Move
 {
-void movePers  (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta);
-void moveEnemy (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta);
-void move2Pers (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta);
-void move2Enemy (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta);
-void move3Pers (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta);
+void CircleSquarePers  (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta, int handsUp);
+void SquareEnemy (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta, int handsUp);
+void TrianglePers (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta, int headRight);
+void TriangleEnemy (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta, int headRight);
+void CircleLinePers (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta, int handsUp, int legsUp);
+void CircleLineEnemy (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta, int legsUp);
 }
 
 
@@ -27,21 +28,9 @@ int main()
 {
     txCreateWindow (800, 600);
 
-    //drawPers (320, 120, 5);
-    //drawPers (420, 220, 10);
 
-    //drawEnemy (100, 200, 4);
-
-    //moveEnemy (300, 400, 200, 300, 8, 100);
-    //movePers (500, 300, 700, 200, 10, 100);
-
-
-    Draw::draw2Pers (300, 300, 5);
-    //draw2Enemy (200, 200, 5);
-    //move2Enemy (500, 300, 700, 200, 10, 100);
-    Draw::draw3Pers (100, 100, 10);
-    Draw::draw3Enemy (400, 400, 10);
-    Draw::drawScene();
+    //Draw::CircleLinePers(100,100,10);
+    Draw::Scene();
 
     return 0;
 }
@@ -51,9 +40,10 @@ int main()
 //Сделать радиус к функции дельту удаление
 namespace Draw
 {
-void drawPers (int x, int y, int scale)
+void CircleSquarePers (int x, int y, int scale, int handsUp)//handsUp принимает значения от 0 до 5(чем больше значение чем ниже руки)
 {
 //100pix 20loops= 100/20=5pix/loop
+    int lengthAdd = 0;
 
     txSetFillColor (TX_BLUE);
     txCircle    (x, y, scale);
@@ -62,112 +52,476 @@ void drawPers (int x, int y, int scale)
 
     txRectangle (x - scale, y + 1.5*scale, x + scale, y + 5*scale);
 
-    txLine      (x - scale, y + 3*scale, x - 1.6*scale, y + 5*scale);
-    txLine      (x + scale, y + 3*scale, x + 1.6*scale, y + 5*scale);
+    if (handsUp == 3 || handsUp == 4 || handsUp == 2 || handsUp == 1)
+    {
+       lengthAdd = 6;
+    }
+    txLine      (x - scale, y + 3 * scale, x - 1.6 * scale - lengthAdd * 0.3 * scale, y + (handsUp % 6) * scale);//hands
+    txLine      (x + scale, y + 3 * scale, x + 1.6 * scale + lengthAdd * 0.3 * scale, y + (handsUp % 6) * scale);
 
-    txLine      (x - 0.4*scale, y + 5*scale, x - 0.6*scale, y + 8*scale);
-    txLine      (x + 0.4*scale, y + 5*scale, x + 0.6*scale, y + 8*scale);
+    txLine      (x - 0.4 * scale, y + 5 * scale, x - 0.6 * scale, y + 8 * scale);
+    txLine      (x + 0.4 * scale, y + 5 * scale, x + 0.6 * scale, y + 8 * scale);
 }
 
-void drawEnemy (int x, int y, int scale)
+void SquareEnemy (int x, int y, int scale, int handsUp)
 {
+    int lengthAdd = 0;
+
     txSetFillColor (TX_RED);
-    txRectangle (x - 0.6*scale, y - 0.6*scale, x + 0.6*scale, y + 0.6*scale);
-    txLine      (x, y + 0.6*scale, x, y + 1.5*scale);
+    txRectangle (x - 0.6*scale, y - 0.6 * scale, x + 0.6 * scale, y + 0.6 * scale);
+    txLine      (x, y + 0.6 * scale, x, y + 1.5 * scale);
 
-    txRectangle (x - scale, y + 1.5*scale, x + scale, y + 5*scale);
+    txRectangle (x - scale, y + 1.5 * scale, x + scale, y + 5 * scale);
 
-    txLine      (x - scale, y + 3*scale, x - 1.6*scale, y + 5*scale);
-    txLine      (x + scale, y + 3*scale, x + 1.6*scale, y + 5*scale);
+    if (handsUp == 3 || handsUp == 4 || handsUp == 2 || handsUp == 1)
+    {
+       lengthAdd = 6;
+    }
+
+    txLine      (x - scale, y + 3*scale, x - 1.6*scale - lengthAdd * 0.3 * scale, y + (handsUp % 6) * scale);
+    txLine      (x + scale, y + 3*scale, x + 1.6*scale + lengthAdd * 0.3 * scale, y + (handsUp % 6) * scale);
 
     txLine      (x - 0.4*scale, y + 5*scale, x - 0.6*scale, y + 6.5*scale);
     txLine      (x + 0.4*scale, y + 5*scale, x + 0.6*scale, y + 6.5*scale);
 }
 
-void draw2Pers (int x, int y, int scale)
+void TrianglePers (int x, int y, int scale, int headRight)//headRight отчечает за качание головы, 2- середина, меньше двух вниз левой частью, больше двух вниз правой частью
 {
+    int inclineL = 0;
+    int inclineR = 0;
+    if ((headRight % 6) > 2)
+    {
+        inclineL =   (headRight % 6) * 0.3 * scale;
+        inclineR = - (headRight % 6) * 0.3 * scale;
+    }
+
+    if ((headRight % 6) < 2)
+    {
+        inclineL = - (headRight % 6) * 0.3 * scale;
+        inclineR =   (headRight % 6) * 0.3 * scale;
+    }
+
     txSetFillColour (TX_YELLOW);
-    POINT pointsHead[3]=  { {x-(0,5*scale), y}, {x+(0,5*scale), y},  { x, y+4*scale} };
+    POINT pointsHead[3]=  { {x-(5*scale) - 2 * scale + ((headRight % 6) * scale), y - inclineL},
+                            {x+(5*scale) - 2 * scale + ((headRight % 6) * scale), y - inclineR}, { x, y+4*scale} };
     txPolygon ( pointsHead, 3 );
     txLine (x, y+4*scale, x, y+6*scale);
     txSetFillColour (TX_MAGENTA);
     POINT pointsBody[3] = { { x, y+6*scale }, { x-3*scale, y+14*scale }, {x+3*scale, y+14*scale } };
     txPolygon ( pointsBody, 3 );
-    txLine ( x-(0,1*scale) , y+14*scale, x-(0,2*scale), y+16*scale);
-    txLine ( x+(0,1*scale) , y+14*scale, x+(0,2*scale), y+16*scale);
+    txLine ( x-(1*scale) , y+14*scale, x-(2*scale), y+16*scale);
+    txLine ( x+(1*scale) , y+14*scale, x+(2*scale), y+16*scale);
 
 
 }
 
-void draw2Enemy (int x, int y, int scale)
+void TriangleEnemy (int x, int y, int scale, int headRight)
     {
+        int inclineL = 0;
+        int inclineR = 0;
+        if ((headRight % 6) > 2)
+        {
+            inclineL =   (headRight % 6) * 0.3 * scale;
+            inclineR = - (headRight % 6) * 0.3 * scale;
+        }
+
+        if ((headRight % 6) < 2)
+        {
+            inclineL = - (headRight % 6) * 0.3 * scale;
+            inclineR =   (headRight % 6) * 0.3 * scale;
+        }
+
         txSetFillColour (TX_GREY);
-        POINT pointsHead[3]=  { {x-(0,4*scale), y}, {x+(0,6*scale), y},  { x, y+4*scale} };
+        POINT pointsHead[3]=  { {x - (4*scale) - 2 * scale + ((headRight % 6) * scale), y - inclineL}, {x + (6*scale) -  2 * scale + ((headRight % 6) * scale), y - inclineR},  { x, y+4*scale} };
         txPolygon ( pointsHead, 3 );
         txLine (x, y+4*scale, x, y+6*scale);
         txSetFillColour (TX_RED);
         POINT pointsBody[3] = { { x, y+6*scale }, { x-4*scale, y+14*scale }, {x+2*scale, y+14*scale } };
         txPolygon ( pointsBody, 3 );
-        txLine ( x-(0,2*scale) , y+14*scale, x-(0,3*scale), y+16*scale);
-        txLine ( x , y+14*scale, x+(0,1*scale), y+16*scale);
+        txLine ( x-(2*scale) , y+14*scale, x-(3*scale), y+16*scale);
+        txLine ( x , y+14*scale, x+(1*scale), y+16*scale);
     }
 
-void draw3Pers (int x, int y, int scale)
+void CircleLinePers (int x, int y, int scale, int handsUp, int legsUp)//по умолчанию handsUp-5, legsUp-2;
 {
+      int lengthAdd = 0;
+      int legsLengthAdd = 0;
+
       txSetFillColour (TX_LIGHTCYAN);
       txCircle (x, y, scale);
-      txSetColour (TX_BLUE);
+      txSetColour (TX_ORANGE);
       txLine (x, y+scale, x, y+5*scale);
 
-      txLine (x, y+2*scale, x-(0,1*scale), y+5*scale);
-      txLine (x, y+2*scale, x+(0,1*scale), y+5*scale);
+      if (handsUp == 3 || handsUp == 4 || handsUp == 2 || handsUp==1)
+      {
+           lengthAdd = 6;
+      }
 
-      txLine (x, y+5*scale, x-(0,1*scale), y+8*scale);
-      txLine (x, y+5*scale, x+(0,1*scale), y+8*scale);
+      if (legsUp % 3 < 2)
+      {
+          legsLengthAdd = 5;
+      }
+
+      txLine (x, y + 2 * scale, x - (1 * scale) - lengthAdd * 0.3 * scale, y + (handsUp % 6) * scale);
+      txLine (x, y + 2 * scale, x + (1 * scale) + lengthAdd * 0.3 * scale, y + (handsUp % 6) * scale);
+
+      txLine (x, y + 5 * scale, x - (1 * scale) - legsLengthAdd * 0.1 * scale, y + 6 * scale + (legsUp % 3) * scale);
+      txLine (x, y + 5 * scale, x + (1 * scale) + legsLengthAdd * 0.1 * scale, y + 6 * scale + (legsUp % 3) * scale);
 }
 
-void draw3Enemy (int x, int y, int scale)
+void CircleLineEnemy (int x, int y, int scale, int handsUp, int legsUp)// handsup-4, legsUp -2(default)
 {
+      int lenghtAdd = 0;
+      int legsLengthAdd = 0;
+
       txSetFillColour (TX_RED);
       txCircle (x, y, scale);
-      txSetColour (TX_GREY);
+      txSetColour (TX_PINK);
       txLine (x, y+scale, x, y+5*scale);
 
-      txLine (x, y+(0,1*scale), x-(0,1*scale), y+4*scale);
-      txLine (x, y+(0,1*scale), x+(0,1*scale), y+4*scale);
+      if (handsUp == 3 || handsUp == 1 || handsUp == 0 || handsUp == 2)
+      {
+           lenghtAdd = 6;
+      }
 
-      txLine (x, y+5*scale, x-(0,1*scale), y+7*scale);
-      txLine (x, y+5*scale, x+(0,1*scale), y+7*scale);
+      if (legsUp % 3 < 2)
+      {
+          legsLengthAdd = 5;
+      }
+
+      txLine (x, y + (1 * scale), (x - (1 * scale) -( lenghtAdd * 0.3 * scale)), y + (handsUp % 5) * scale);
+      txLine (x, y + (1 * scale), x + (1 * scale) + lenghtAdd * 0.3 * scale, y + (handsUp % 5) * scale);
+
+      txLine (x, y + 5 * scale, x - (1 * scale) - legsLengthAdd * 0.1 * scale, y + 7 * scale);
+      txLine (x, y + 5 * scale, x + (1 * scale) + legsLengthAdd * 0.1 * scale, y + 7 * scale);
 }
 
-void drawBackground ()
+void Background ()
 {
-    txSetFillColour (TX_BLACK);
+    txSetFillColour (TX_WHITE);
     txClear ();
-    txSetColour (TX_RED);
-    txLine (0, 300, 900, 300);
-    txLine (0, 400, 900, 200);
-    txLine (0, 200, 900, 400);
+    txSetFillColour (RGB (150, 75, 0));
+    txSetColour (TX_BLACK);
+    //txSetColour (TX_PINK);
+    txRectangle (0, 500, 800, 600);
+    txSetFillColour (TX_WHITE);
+    txRectangle (0, 0, 800, 500);
 }
 
-void drawScene ()
+void Scene ()
 {
-    for (int t = 0; t < 100; t++)
+    int xCircleSquarePers = 10;
+    int ySquareEnemy = 790;
+
+    Draw::Background();
+    txTextOut (200, 100, "Это короткий маленький мультик");
+    txSleep(5000);
+
+    for (int t = 0; t < 90; t++)
     {
-        Draw::drawBackground();
-        Draw::draw3Pers (100 + 2 * t, 100, 10);
-        Draw::draw3Enemy (200 + 2 * t, 300, 10);
-        Draw::draw2Pers (400 - 2 * t, 400 - 50 * (t % 4), 10 + t % 4);
+        xCircleSquarePers += 4 * t;
+        ySquareEnemy -= 4*t;
+        Draw::Background ();
+        Draw::CircleSquarePers (10 + 4 * t, 420, 10, 5);
+        Draw::SquareEnemy      (790 - 4 * t, 437, 10, 5);
+
+        txSleep (100);
+    }
+
+    txTextOut (300, 390, "Игрок слева: Привет!");
+    txSleep (3000);
+
+    Draw::Background ();
+    Draw::CircleSquarePers (350, 420, 10, 5);
+    Draw::SquareEnemy      (400, 437, 10, 5);
+    txTextOut (400, 390, "Игрок справа: Здравствуй, как твои дела?");
+    txSleep (3000);
+
+    Draw::Background ();
+    Draw::CircleSquarePers (350, 420, 10, 2);
+    Draw::SquareEnemy      (400, 437, 10, 5);
+    txTextOut (300, 390, "Игрок слева: Отлично, не хочешь поиграть в мафию?");
+    txSleep (3000);
+
+
+    Draw::Background ();
+    Draw::CircleSquarePers (350, 420, 10, 5);
+    Draw::SquareEnemy      (400, 437, 10, 4);
+    txTextOut (300, 390, "Игрок справа: Я не против, только давай позовем других?");
+    txSleep (3000);
+
+    for (int t = 0; t < 90; t++)
+    {
+        Draw::Background();
+        Draw::CircleSquarePers (350, 420, 10, 5);
+        Draw::SquareEnemy      (390, 437, 10, 5);
+        Draw::TrianglePers  (10 + 3 * t, 370, 8, 1 + (t % 3));
+        Draw::TriangleEnemy (790 - 3 * t, 370, 8, 1 + (t % 3));
+
+        txSleep (100);
+    }
+
+    Draw::Background();
+    Draw::CircleSquarePers (350, 420, 10, 2);
+    Draw::SquareEnemy      (400, 437, 10, 5);
+    Draw::TrianglePers  (250, 370, 8, 2);
+    Draw::TriangleEnemy (500, 370, 8, 2);
+    txTextOut (200, 300, "Присоединившиеся игроки: Здравствуйте!");
+    txSleep (3000);
+
+    for (int t = 0; t < 90; t++)
+    {
+        Draw::Background();
+        Draw::CircleSquarePers (350, 420, 10, 5);
+        Draw::SquareEnemy      (390, 437, 10, 5);
+        Draw::TrianglePers   (250, 370, 8, 2);;
+        Draw::TriangleEnemy  (500, 370, 8, 2);
+        Draw::CircleLinePers  (10 + 2 * t,  420, 10, 5, t % 3);
+        Draw::CircleLineEnemy (790 - 2 * t, 430, 10, 4, t % 3);
+
+        txSleep (100);
+    }
+
+    Draw::Background();
+    Draw::CircleSquarePers (350, 420, 10, 5);
+    Draw::SquareEnemy      (400, 437, 10, 5);
+    Draw::TrianglePers  (250, 370, 8, 2);
+    Draw::TriangleEnemy (500, 370, 8, 2);
+    Draw::CircleLinePers  (150, 420, 10, 2, 2);
+    Draw::CircleLineEnemy (600, 430, 10, 4, 2);
+    txSetColour (TX_BLACK);
+    txTextOut (80, 350, "Присоединившиеся игроки: Так будем играть в мафию или нет?");
+    txSleep (3000);
+
+    Draw::Background();
+    Draw::CircleSquarePers (350, 420, 10, 5);
+    Draw::SquareEnemy      (400, 437, 10, 5);
+    Draw::TrianglePers  (250, 370, 8, 2);
+    Draw::TriangleEnemy (500, 370, 8, 2);
+    Draw::CircleLinePers  (150, 420, 10, 5, 2);
+    Draw::CircleLineEnemy (600, 430, 10, 4, 2);
+    txSetColour (TX_BLACK);
+    txTextOut (300, 100, "Ведущий: Да. Правила: две мафии, три мирных, а также доктор");
+    txSleep (3000);
+
+    Draw::Background();
+    Draw::CircleSquarePers (350, 420, 10, 5);
+    Draw::SquareEnemy      (400, 437, 10, 5);
+    Draw::TrianglePers  (250, 370, 8, 2);
+    Draw::TriangleEnemy (500, 370, 8, 2);
+    Draw::CircleLinePers  (150, 420, 10, 5, 2);
+    Draw::CircleLineEnemy (600, 430, 10, 4, 2);
+    txSetColour (TX_BLACK);
+    txTextOut (300, 100, "Ведущий: Получаем роли и начинаем");
+    txSleep (3000);
+
+    Draw::Background();
+    Draw::CircleSquarePers (350, 420, 10, 5);
+    Draw::SquareEnemy      (400, 437, 10, 5);
+    Draw::TrianglePers  (250, 370, 8, 2);
+    Draw::TriangleEnemy (500, 370, 8, 2);
+    Draw::CircleLinePers  (150, 420, 10, 5, 2);
+    Draw::CircleLineEnemy (600, 430, 10, 4, 2);
+    txSetColour (TX_BLACK);
+    txTextOut (300, 100, "Ведущий: Роли розданы, начинаем");
+    txSleep (3000);
+    
+    Draw::Background();
+    Draw::CircleSquarePers (350, 420, 10, 5);
+    Draw::SquareEnemy      (400, 437, 10, 5);
+    Draw::TrianglePers  (250, 370, 8, 2);
+    Draw::TriangleEnemy (500, 370, 8, 2);
+    Draw::CircleLinePers  (150, 420, 10, 5, 2);
+    Draw::CircleLineEnemy (600, 430, 10, 4, 2);
+    txSetColour (TX_BLACK);
+    txTextOut (300, 100, "Ведущий: Город засыпает");
+    txSleep (1000);
+
+    Draw::Background();
+    Draw::CircleSquarePers (350, 420, 10, 1);
+    Draw::SquareEnemy      (400, 437, 10, 5);
+    Draw::TrianglePers  (250, 370, 8, 2);
+    Draw::TriangleEnemy (500, 370, 8, 2);
+    Draw::CircleLinePers  (150, 420, 10, 5, 2);
+    Draw::CircleLineEnemy (600, 430, 10, 4, 2);
+    txSetColour (TX_BLACK);
+    txTextOut (300, 100, "Ведущий: Мафия делает выбор");
+    txSleep (2000);
+
+    Draw::Background();
+    Draw::CircleSquarePers (350, 420, 10, 5);
+    Draw::SquareEnemy      (400, 437, 10, 5);
+    Draw::TrianglePers  (250, 370, 8, 2);
+    Draw::TriangleEnemy (500, 370, 8, 5);
+    Draw::CircleLinePers  (150, 420, 10, 5, 2);
+    Draw::CircleLineEnemy (600, 430, 10, 4, 2);
+    txSetColour (TX_BLACK);
+    txTextOut (300, 100, "Ведущий: Доктор делает выбор");
+    txSleep (2000);
+
+    Draw::Background();
+    Draw::CircleSquarePers (350, 420, 10, 1);
+    Draw::SquareEnemy      (400, 437, 10, 5);
+    Draw::TrianglePers  (250, 370, 8, 2);
+    Draw::TriangleEnemy (500, 370, 8, 2);
+    Draw::CircleLinePers  (150, 420, 10, 5, 2);
+    Draw::CircleLineEnemy (600, 430, 10, 4, 2);
+    txSetColour (TX_BLACK);
+    txTextOut (300, 100, "Ведущий: Город просыпается, без центрально-левого игрока");
+    txSleep (3000);
+
+    Draw::Background();
+    //Draw::CircleSquarePers (350, 420, 10, 1);
+    Draw::SquareEnemy      (400, 437, 10, 5);
+    Draw::TrianglePers  (250, 370, 8, 2);
+    Draw::TriangleEnemy (500, 370, 8, 2);
+    Draw::CircleLinePers  (150, 420, 10, 5, 2);
+    Draw::CircleLineEnemy (600, 430, 10, 2, 2);
+    txSetColour (TX_BLACK);
+    txTextOut (300, 100, "Ведущий: На голосовании убит игрок");
+    txSleep (3000);
+
+    Draw::Background();
+    //Draw::CircleSquarePers (350, 420, 10, 1);
+    Draw::SquareEnemy      (400, 437, 10, 5);
+    Draw::TrianglePers  (250, 370, 8, 2);
+    Draw::TriangleEnemy (500, 370, 8, 2);
+    Draw::CircleLinePers  (150, 420, 10, 5, 2);
+    //Draw::CircleLineEnemy (600, 430, 10, 4, 2);
+    txSetColour (TX_BLACK);
+    txTextOut (300, 100, "Ведущий: Город засыпает");
+    txSleep (1000);
+
+    Draw::Background();
+    //Draw::CircleSquarePers (350, 420, 10, 1);
+    Draw::SquareEnemy      (400, 437, 10, 5);
+    Draw::TrianglePers  (250, 370, 8, 2);
+    Draw::TriangleEnemy (500, 370, 8, 2);
+    Draw::CircleLinePers  (150, 420, 10, 2, 2);
+    //Draw::CircleLineEnemy (600, 430, 10, 4, 2);
+    txSetColour (TX_BLACK);
+    txTextOut (300, 100, "Ведущий: Мафия делает выбор");
+    txSleep (2000);
+
+    Draw::Background();
+    //Draw::CircleSquarePers (350, 420, 10, 1);
+    Draw::SquareEnemy      (400, 437, 10, 5);
+    Draw::TrianglePers  (250, 370, 8, 2);
+    Draw::TriangleEnemy (500, 370, 8, 2);
+    Draw::CircleLinePers  (150, 420, 10, 2, 2);
+    //Draw::CircleLineEnemy (600, 430, 10, 4, 2);
+    txSetColour (TX_BLACK);
+    txTextOut (300, 100, "Ведущий: Доктор делает выбор");
+    txSleep (2000);
+
+    Draw::Background();
+    //Draw::CircleSquarePers (350, 420, 10, 1);
+    Draw::SquareEnemy      (400, 437, 10, 5);
+    Draw::TrianglePers  (250, 370, 8, 2);
+    Draw::TriangleEnemy (500, 370, 8, 2);
+    Draw::CircleLinePers  (150, 420, 10, 5, 2);
+    //Draw::CircleLineEnemy (600, 430, 10, 4, 2);
+    txSetColour (TX_BLACK);
+    txTextOut (300, 100, "Ведущий: Город просыпается, никто не умер");
+    txSleep (2000);
+
+    Draw::Background();
+    //Draw::CircleSquarePers (350, 420, 10, 1);
+    Draw::SquareEnemy      (400, 437, 10, 5);
+    Draw::TrianglePers  (250, 370, 8, 2);
+    Draw::TriangleEnemy (500, 370, 8, 2);
+    Draw::CircleLinePers  (150, 420, 10, 5, 2);
+    //Draw::CircleLineEnemy (600, 430, 10, 4, 2);
+    txSetColour (TX_BLACK);
+    txTextOut (300, 100, "Ведущий: На голосование убит самый левый игрок");
+    txSleep (3000);
+
+    Draw::Background();
+    //Draw::CircleSquarePers (350, 420, 10, 1);
+    Draw::SquareEnemy      (400, 437, 10, 5);
+    Draw::TrianglePers  (250, 370, 8, 2);
+    Draw::TriangleEnemy (500, 370, 8, 2);
+    //Draw::CircleLinePers  (150, 420, 10, 5, 2);
+    //Draw::CircleLineEnemy (600, 430, 10, 4, 2);
+    txSetColour (TX_BLACK);
+    txTextOut (300, 100, "Ведущий: Город засыпает");
+    txSleep (1000);
+
+    Draw::Background();
+    //Draw::CircleSquarePers (350, 420, 10, 1);
+    Draw::SquareEnemy      (400, 437, 10, 2);
+    Draw::TrianglePers  (250, 370, 8, 2);
+    Draw::TriangleEnemy (500, 370, 8, 2);
+    //Draw::CircleLinePers  (150, 420, 10, 5, 2);
+    //Draw::CircleLineEnemy (600, 430, 10, 4, 2);
+    txSetColour (TX_BLACK);
+    txTextOut (300, 100, "Ведущий: Мафия делает выбор");
+    txSleep (2000);
+
+    Draw::Background();
+    //Draw::CircleSquarePers (350, 420, 10, 1);
+    Draw::SquareEnemy      (400, 437, 10, 2);
+    Draw::TrianglePers  (250, 370, 8, 2);
+    Draw::TriangleEnemy (500, 370, 8, 5);
+    //Draw::CircleLinePers  (150, 420, 10, 5, 2);
+    //Draw::CircleLineEnemy (600, 430, 10, 4, 2);
+    txSetColour (TX_BLACK);
+    txTextOut (300, 100, "Ведущий: Доктор делает выбор");
+    txSleep (2000);
+
+    Draw::Background();
+    //Draw::CircleSquarePers (350, 420, 10, 1);
+    Draw::SquareEnemy      (400, 437, 10, 5);
+    Draw::TrianglePers  (250, 370, 8, 2);
+    Draw::TriangleEnemy (500, 370, 8, 2);
+    // Draw::CircleLinePers  (150, 420, 10, 5, 2);
+    //Draw::CircleLineEnemy (600, 430, 10, 4, 2);
+    txSetColour (TX_BLACK);
+    txTextOut (300, 100, "Ведущий: Город просыпается, как не странно без потерь уже второй раз");
+    txSleep (3000);
+
+    Draw::Background();
+    //Draw::CircleSquarePers (350, 420, 10, 1);
+    Draw::SquareEnemy      (400, 437, 10, 5);
+    Draw::TrianglePers  (250, 370, 8, 2);
+    Draw::TriangleEnemy (500, 370, 8, 5);
+    // Draw::CircleLinePers  (150, 420, 10, 5, 2);
+    //Draw::CircleLineEnemy (600, 430, 10, 4, 2);
+    txSetColour (TX_BLACK);
+    txTextOut (300, 100, "Ведущий: На голосовании убит самый правый игрок");
+    txSleep (3000);
+
+    Draw::Background();
+    //Draw::CircleSquarePers (350, 420, 10, 1);
+    Draw::SquareEnemy      (400, 437, 10, 5);
+    Draw::TrianglePers  (250, 370, 8, 2);
+    //Draw::TriangleEnemy (500, 370, 8, 2);
+    // Draw::CircleLinePers  (150, 420, 10, 5, 2);
+    //Draw::CircleLineEnemy (600, 430, 10, 4, 2);
+    txSetColour (TX_BLACK);
+    txTextOut (300, 100, "Ведущий: Мафия выйграла, так бывает");
+    txSleep (3000);
+
+    Draw::Background();
+    txSetColour (TX_BLACK);
+    txTextOut (300, 100, "Мультфильм сделан Богомолом Сашей");
+
+    for ( int t = 0; t < 100; t++)
+    {
+        Draw::Background();
+        txSetColour (TX_BLACK);
+        txTextOut (300, 100, "Левый игрок: Еееееееееееееееееееее, я выйграл, я крутой!");
+        Draw::SquareEnemy      (400, 437, 10, 5);
+        Draw::TrianglePers  (250, 370, 8, t % 6);
 
         txSleep (100);
     }
 }
-
 }
 
 namespace Move
 {
-void move2Pers (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta)
+void TrianglePers (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta, int headRight)
 {
     int vX = (finishX - startPosX)  / delta;
     int vY = (finishY - startPosY)  / delta;
@@ -175,12 +529,12 @@ void move2Pers (int startPosX, int startPosY, int finishX, int finishY, int scal
     {
        int currPosX = startPosX + vX*t;
        int currPosY = startPosY+ vY*t;
-       Draw::draw2Pers (currPosX, currPosY, scale);
+       Draw::TrianglePers (currPosX, currPosY, scale, headRight);
        txSleep (100);
     }
 }
 
-void move2Enemy (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta)
+void TriangleEnemy (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta, int headRight)
     {
         int vX = (finishX - startPosX)  / delta;
         int vY = (finishY - startPosY)  / delta;
@@ -189,12 +543,12 @@ void move2Enemy (int startPosX, int startPosY, int finishX, int finishY, int sca
             int currPosX = startPosX + vX*t;
             int currPosY = startPosY+ vY*t;
 
-            Draw::draw2Enemy(currPosX, currPosY, scale);
+            Draw::TriangleEnemy(currPosX, currPosY, scale, headRight);
             txSleep (100);
         }
     }
 
-void move3Pers (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta)
+void CircleLinePers (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta, int handsUp, int legsUp)
 {
     int vX = (finishX - startPosX)  / delta;
     int vY = (finishY - startPosY)  / delta;
@@ -202,12 +556,12 @@ void move3Pers (int startPosX, int startPosY, int finishX, int finishY, int scal
     {
        int currPosX = startPosX + vX*t;
        int currPosY = startPosY+ vY*t;
-       Draw::draw3Pers (currPosX, currPosY, scale);
+       Draw::CircleLinePers (currPosX, currPosY, scale, handsUp, legsUp);
        txSleep (100);
     }
 }
 
-void move3Enemy (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta)
+void CircleLineEnemy (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta, int handsUp, int legsUp)
 {
     int vX = (finishX - startPosX)  / delta;
     int vY = (finishY - startPosY)  / delta;
@@ -215,12 +569,12 @@ void move3Enemy (int startPosX, int startPosY, int finishX, int finishY, int sca
     {
        int currPosX = startPosX + vX*t;
        int currPosY = startPosY+ vY*t;
-       Draw::draw3Enemy (currPosX, currPosY, scale);
+       Draw::CircleLineEnemy (currPosX, currPosY, scale, handsUp, legsUp);
        txSleep (100);
     }
 }
 
-void movePers (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta)
+void CircleSquarePers (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta, int handsUp)
 {
     int vX = (finishX - startPosX)  / delta;
     int vY = (finishY - startPosY)  / delta;
@@ -230,12 +584,12 @@ void movePers (int startPosX, int startPosY, int finishX, int finishY, int scale
        int currPosX = startPosX + vX*t;
        int currPosY = startPosY+ vY*t;
        txClearConsole();
-       Draw::drawPers (currPosX, currPosY, scale);
+       Draw::CircleSquarePers (currPosX, currPosY, scale, handsUp);
        txSleep (100);
     }
 }
 
-void moveEnemy (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta)
+void SquareEnemy (int startPosX, int startPosY, int finishX, int finishY, int scale, int delta, int handsUp)
 {
     int vX = (finishX - startPosX)  / delta;
     int vY = (finishY - startPosY)  / delta;
@@ -243,8 +597,9 @@ void moveEnemy (int startPosX, int startPosY, int finishX, int finishY, int scal
     {
        int currPosX = startPosX + vX*t;
        int currPosY = startPosY+ vY*t;
-       Draw::drawEnemy (currPosX, currPosY, scale);
+       Draw::SquareEnemy (currPosX, currPosY, scale, handsUp);
        txSleep (100);
     }
 }
 }
+
