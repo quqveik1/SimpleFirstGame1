@@ -2,14 +2,18 @@
 
 namespace Draw
 {
-void CircleSquarePers(int x, int y, int scale, int handsUp);
-void SquareEnemy     (int x, int y, int scale, int handsUp);
-void TrianglePers    (int x, int y, int scale, int headRight);
-void CircleLinePers  (int x, int y, int scale, int handsUp, int legsUp);
-void CircleLineEnemy (int x, int y, int scale, int handsUp, int legsUp);
-void TriangleEnemy   (int x, int y, int scale, int headRight);
-void Background();
 void Scene();
+void Background();
+void MoveCircleSquareP();
+void MoveTriangleP ();
+void MoveCircleLineP ();
+void MoveSquareE ();
+void MoveTriangleE ();
+void MoveCircleLineE ();
+void DrawPersonsGame7 (int handsUpCircleSquarePers, int handsUpSquareEmemy, 
+                       int inclineTrianglePers, int inclineTriangleEnemy, 
+                       int handsUpCircleLinePers, int handsUpCircleLineEnemy,
+                       const char text[], int draw);
 void DrawText (const char text[]);
 void DrawPersons2     (int handsUp1, int handsUp2, const char text[]);
 void DrawPersons4     (int handsUpCircleSquarePers, int handsUpSquareEmemy, 
@@ -29,7 +33,14 @@ void DrawPersonsGame6 (int handsUpCircleSquarePers, int handsUpSquareEmemy,
                        bool drawTriangleEnemy,
                        bool drawCircleLinePers,
                        bool drawCircleLineEnemy);
+
 void FinishScene      (const char text[]);
+void CircleSquarePers(int x, int y, int scale, int handsUp);
+void SquareEnemy     (int x, int y, int scale, int handsUp);
+void TrianglePers    (int x, int y, int scale, int headRight);
+void CircleLinePers  (int x, int y, int scale, int handsUp, int legsUp);
+void CircleLineEnemy (int x, int y, int scale, int handsUp, int legsUp);
+void TriangleEnemy   (int x, int y, int scale, int headRight);
 }
 
 namespace Move
@@ -63,8 +74,8 @@ void CircleLineEnemy (int startPosX, int startPosY, int finishX, int finishY, in
        v         ^^         ^^
         \________|___________|_____>>>>
 
-42310
-11001 (2) = 1 * 2^4 + 1 * 2^3 + 0 * 2^2 + 0 * 2^1 + 1 * 2^0
+43210
+11001 (2) = 1 * 2^4 + 1 * 2^3 + 0 * 2^2 + 0 * 2^1 + 1 * 2^0 = 25 (10)
 
 2-5 8-5 16-5
 /////////////////////////////////////////////////////////////
@@ -114,17 +125,87 @@ fa524 (16) = 15 * 16^4 +10 * 16^3 + 5 * 16^2 + 2 * 16^1 + 4 * 16^0
 
 543210
 e3789c (16) = 14 * 16^4 + 3 * 16^4 + 7 * 16^3 + 8 * 16^2 + 9 * 16^1 + 12 * 16^0
+//////////////////////////////////////////////////////////////////////////////
 
+10
+13 (10) = ?(2)
+13|2
+12|6 --> 6|2
+ 1       0|3 -->  3|2
+ ^       ^        1|1 --> 1|2
+                  ^       1|0
+                          ^
+1101 (2) = ?(10)
+3210
+1101 (2) = 8 + 4 + 1 = 13
+д.з 3802 --> ?(16)
+100
+10 (8) = 8(10)
+10 (16) = 16 (10)
+Draw::sth(1, 0, 0, 1, 0, 1);
+На уроке матемитике Учительница спрашивает вовочку чему равна сумма чисел a, b: вовочка знает плохо математику: 
+он может наугад сказать число, 
+когда учительница начнет спрашивать вовочку он должен подобрать систему исчисления в которой его ответ верен
+Вопрос какое число выгоднее всего говорить вовочке для учительницы
+Ответ: 10
+*/
+
+const int CircleSquareP = (1 << 5), // 0x20
+          SquareE       = (1 << 4), // 0x10
+          TriangleP     = (1 << 3), // 0x08
+          TriangleE     = (1 << 2), // 0x04
+          CircleLineP   = (1 << 1), // 0x02
+          CircleLineE   = (1 << 0); // 0x01
+ 
+/*
+100000
+010000
+001000
+000100
+000010
+000001
 */
 
 int main()
 {
     txCreateWindow (800, 600);
 
-    Draw::Scene();
+    //Draw::Scene();
+    //Move::MoveTriangle (100, 100, 3, 8);
+    
+    Draw::MoveCircleLineE ();
     //                                               Cs S Tp Te Clp Cle
-     //Draw::DrawPersonsGame6 (5, 5, 2, 2, 5, 4, "HI!", 1, 0, 1, 0, 0, 1);
-     //Draw::DrawPersonsGame6 (5, 5, 2, 2, 5, 4, " ",   1, 0, 1, 1, 1, 0);
+    //Draw::DrawPersonsGame6 (5, 5, 2, 2, 5, 4, "HI!", 1, 0, 1, 0, 0, 1);
+    //Draw::DrawPersonsGame6 (5, 5, 2, 2, 5, 4, " ",   1, 0, 1, 1, 1, 0);
+   // Draw::DrawPersonsGame7 (5, 5, 2, 2, 5, 4, "", CircleSquareP | SquareE | CircleLineE);
+    // Draw::DrawPersonsGame7 (5, 5, 2, 2, 5, 4, "", ~(TriangleE | TriangleP) & (~SquareE)); //~(TriangleE | TriangleP) ^ SquareE
+    //~ инверсия
+
+     /*
+        110011
+       ~010000
+        101111
+        ------
+        100011
+        ////////////////////
+        ------
+        001000
+        000100
+        ______
+        001100
+
+        110011
+        010000
+        ------
+        100011
+        ------
+        100000
+        010000
+        001000
+        000100
+        000010
+        000001
+        */
 
     return 0;
 }
@@ -134,172 +215,65 @@ int main()
 //Сделать радиус к функции дельту удаление
 namespace Draw
 {
-void CircleSquarePers (int x, int y, int scale, int handsUp)//handsUp принимает значения от 0 до 5(чем больше значение чем ниже руки)
+
+void MoveCircleSquareP ()
 {
-//100pix 20loops= 100/20=5pix/loop
-    int lengthAdd = 0;
-
-    txSetFillColor (TX_BLUE);
-    txCircle    (x, y, scale);
-    txSetFillColor (TX_GREEN);
-    txLine      (x, y + scale, x, y + 1.5*scale);
-
-    txRectangle (x - scale, y + 1.5*scale, x + scale, y + 5*scale);
-
-    if (handsUp == 3 || handsUp == 4 || handsUp == 2 || handsUp == 1)
+    for (int t = 0; t < 90; t++)
     {
-       lengthAdd = 6;
+        Draw::Background ();
+        Draw::CircleSquarePers (10 + t * 4, 200 - fabs((t % 20) - 10), 10, fabs ((t % 6) - 3));
+        txSleep (100);
     }
-    txLine      (x - scale, y + 3 * scale, x - 1.6 * scale - lengthAdd * 0.3 * scale, y + (handsUp % 6) * scale);//hands
-    txLine      (x + scale, y + 3 * scale, x + 1.6 * scale + lengthAdd * 0.3 * scale, y + (handsUp % 6) * scale);
-
-    txLine      (x - 0.4 * scale, y + 5 * scale, x - 0.6 * scale, y + 8 * scale);
-    txLine      (x + 0.4 * scale, y + 5 * scale, x + 0.6 * scale, y + 8 * scale);
 }
 
-void SquareEnemy (int x, int y, int scale, int handsUp)
+void MoveTriangleP ()
 {
-    int lengthAdd = 0;
-
-    txSetFillColor (TX_RED);
-    txRectangle (x - 0.6*scale, y - 0.6 * scale, x + 0.6 * scale, y + 0.6 * scale);
-    txLine      (x, y + 0.6 * scale, x, y + 1.5 * scale);
-
-    txRectangle (x - scale, y + 1.5 * scale, x + scale, y + 5 * scale);
-
-    if (handsUp == 3 || handsUp == 4 || handsUp == 2 || handsUp == 1)
+    for (int t = 0; t < 100; t++)
     {
-       lengthAdd = 6;
+        Draw::Background ();
+        Draw::TrianglePers (10 + t * 4, 200 + ( fabs ((t % 50) - 25)), 8, fabs (t % 10 - 5));
+        txSleep (100);
     }
-
-    txLine      (x - scale, y + 3*scale, x - 1.6*scale - lengthAdd * 0.3 * scale, y + (handsUp % 6) * scale);
-    txLine      (x + scale, y + 3*scale, x + 1.6*scale + lengthAdd * 0.3 * scale, y + (handsUp % 6) * scale);
-
-    txLine      (x - 0.4*scale, y + 5*scale, x - 0.6*scale, y + 6.5*scale);
-    txLine      (x + 0.4*scale, y + 5*scale, x + 0.6*scale, y + 6.5*scale);
 }
 
-void TrianglePers (int x, int y, int scale, int headRight)//headRight отчечает за качание головы, 2- середина, меньше двух вниз левой частью, больше двух вниз правой частью
+void MoveCircleLineP ()
 {
-    int inclineL = 0;
-    int inclineR = 0;
-    if ((headRight % 6) > 2)
+    for (int t = 0; t < 100; t++)
     {
-        inclineL =   ROUND ((headRight % 6) * 0.3 * scale);
-        inclineR = ROUND (- (headRight % 6) * 0.3 * scale);
+        Draw::Background ();
+        Draw::CircleLinePers (10 + t * 4, 200 + fabs ((t % 30) - 15), 10, fabs ((t % 6) - 3), t % 3);
+        txSleep (100);
     }
-
-    if ((headRight % 6) < 2)
-    {
-        inclineL = ROUND (- (headRight % 6) * 0.3 * scale);
-        inclineR = ROUND (  (headRight % 6) * 0.3 * scale);
-    }
-
-    txSetFillColour (TX_YELLOW);
-    POINT pointsHead[3]=  { {x-(5*scale) - 2 * scale + ((headRight % 6) * scale), y - inclineL},
-                            {x+(5*scale) - 2 * scale + ((headRight % 6) * scale), y - inclineR}, { x, y+4*scale} };
-    txPolygon ( pointsHead, 3 );
-    txLine (x, y+4*scale, x, y+6*scale);
-    txSetFillColour (TX_MAGENTA);
-    POINT pointsBody[3] = { { x, y+6*scale }, { x-3*scale, y+14*scale }, {x+3*scale, y+14*scale } };
-    txPolygon ( pointsBody, 3 );
-    txLine ( x-(1*scale) , y+14*scale, x-(2*scale), y+16*scale);
-    txLine ( x+(1*scale) , y+14*scale, x+(2*scale), y+16*scale);
-
-
 }
 
-void TriangleEnemy (int x, int y, int scale, int headRight)
+void MoveSquareE ()
+{
+    for (int t = 0; t < 90; t++)
     {
-        int inclineL = 0;
-        int inclineR = 0;
-        if ((headRight % 6) > 2)
-        {
-            inclineL =   ROUND ((headRight % 6) * 0.3 * scale);
-            inclineR = ROUND (- (headRight % 6) * 0.3 * scale);
-        }
-
-        if ((headRight % 6) < 2)
-        {
-            inclineL = ROUND (- (headRight % 6) * 0.3 * scale);
-            inclineR =   ROUND ((headRight % 6) * 0.3 * scale);
-        }
-
-        txSetFillColour (TX_GREY);
-        POINT pointsHead[3]=  { {x - (4*scale) - 2 * scale + ((headRight % 6) * scale), y - inclineL}, {x + (6*scale) -  2 * scale + ((headRight % 6) * scale), y - inclineR},  { x, y+4*scale} };
-        txPolygon ( pointsHead, 3 );
-        txLine (x, y+4*scale, x, y+6*scale);
-        txSetFillColour (TX_RED);
-        POINT pointsBody[3] = { { x, y+6*scale }, { x-4*scale, y+14*scale }, {x+2*scale, y+14*scale } };
-        txPolygon ( pointsBody, 3 );
-        txLine ( x-(2*scale) , y+14*scale, x-(3*scale), y+16*scale);
-        txLine ( x , y+14*scale, x+(1*scale), y+16*scale);
+        Draw::Background ();
+        Draw::SquareEnemy (10 + t * 4, 200 - fabs((t % 20) - 10), 10, fabs ((t % 6) - 3));
+        txSleep (100);
     }
-
-void CircleLinePers (int x, int y, int scale, int handsUp, int legsUp)//по умолчанию handsUp-5, legsUp-2;
-{
-      int lengthAdd = 0;
-      int legsLengthAdd = 0;
-
-      txSetFillColour (TX_LIGHTCYAN);
-      txCircle (x, y, scale);
-      txSetColour (TX_ORANGE);
-      txLine (x, y+scale, x, y+5*scale);
-
-      if (handsUp == 3 || handsUp == 4 || handsUp == 2 || handsUp==1)
-      {
-           lengthAdd = 6;
-      }
-
-      if (legsUp % 3 < 2)
-      {
-          legsLengthAdd = 5;
-      }
-
-      txLine (x, y + 2 * scale, x - (1 * scale) - lengthAdd * 0.3 * scale, y + (handsUp % 6) * scale);
-      txLine (x, y + 2 * scale, x + (1 * scale) + lengthAdd * 0.3 * scale, y + (handsUp % 6) * scale);
-
-      txLine (x, y + 5 * scale, x - (1 * scale) - legsLengthAdd * 0.1 * scale, y + 6 * scale + (legsUp % 3) * scale);
-      txLine (x, y + 5 * scale, x + (1 * scale) + legsLengthAdd * 0.1 * scale, y + 6 * scale + (legsUp % 3) * scale);
 }
 
-void CircleLineEnemy (int x, int y, int scale, int handsUp, int legsUp)// handsup-4, legsUp -2(default)
+void MoveTriangleE ()
 {
-      int lenghtAdd = 0;
-      int legsLengthAdd = 0;
-
-      txSetFillColour (TX_RED);
-      txCircle (x, y, scale);
-      txSetColour (TX_PINK);
-      txLine (x, y+scale, x, y+5*scale);
-
-      if (handsUp == 3 || handsUp == 1 || handsUp == 0 || handsUp == 2)
-      {
-           lenghtAdd = 6;
-      }
-
-      if (legsUp % 3 < 2)
-      {
-          legsLengthAdd = 5;
-      }
-
-      txLine (x, y + (1 * scale), (x - (1 * scale) -( lenghtAdd * 0.3 * scale)), y + (handsUp % 5) * scale);
-      txLine (x, y + (1 * scale), x + (1 * scale) + lenghtAdd * 0.3 * scale, y + (handsUp % 5) * scale);
-
-      txLine (x, y + 5 * scale, x - (1 * scale) - legsLengthAdd * 0.1 * scale, y + 7 * scale);
-      txLine (x, y + 5 * scale, x + (1 * scale) + legsLengthAdd * 0.1 * scale, y + 7 * scale);
+    for (int t = 0; t < 100; t++)
+    {
+        Draw::Background ();
+        Draw::TriangleEnemy (10 + t * 4, 200 + ( fabs ((t % 50) - 25)), 8, fabs (t % 10 - 5));
+        txSleep (100);
+    }
 }
 
-void Background ()
+void MoveCircleLineE ()
 {
-    txSetFillColour (TX_WHITE);
-    txClear ();
-    txSetFillColour (RGB (150, 75, 0));
-    txSetColour (TX_BLACK);
-    //txSetColour (TX_PINK);
-    txRectangle (0, 500, 800, 600);
-    txSetFillColour (TX_WHITE);
-    txRectangle (0, 0, 800, 500);
+    for (int t = 0; t < 100; t++)
+    {
+        Draw::Background ();
+        Draw::CircleLineEnemy (10 + t * 4, 200 + fabs ((t % 30) - 15), 10, t % 5, t % 3);
+        txSleep (100);
+    }
 }
 
 void Scene ()
@@ -520,6 +494,18 @@ void Scene ()
     txTextOut (300, 100, "Мультфильм сделан Богомолом Сашей");
 }
 
+void Background ()
+{
+    txSetFillColour (TX_WHITE);
+    txClear ();
+    txSetFillColour (RGB (150, 75, 0));
+    txSetColour (TX_BLACK);
+    //txSetColour (TX_PINK);
+    txRectangle (0, 500, 800, 600);
+    txSetFillColour (TX_WHITE);
+    txRectangle (0, 0, 800, 500);
+}
+
 void DrawText (const char text[])
 {
     txSetTextAlign ();
@@ -595,6 +581,81 @@ void DrawPersonsGame6 (int handsUpCircleSquarePers, int handsUpSquareEmemy,
 
 }
 
+void DrawPersonsGame7 (int handsUpCircleSquarePers, int handsUpSquareEmemy, 
+                       int inclineTrianglePers, int inclineTriangleEnemy, 
+                       int handsUpCircleLinePers, int handsUpCircleLineEnemy,
+                       const char text[], int draw)
+{
+
+    //41 (10) = 101001 (2)
+    /*
+    Битовое умножение, битовое "И", bitwise "and" = a & b  ( & )
+    101001 (2) = 
+    111000 (2) =
+    101000 (2)
+
+    101001
+    100000 - маска для старшего разряда остальное сбрасывает в ноль
+    000001 - маска для младшего разряда
+
+    Побитовое или (|)
+
+    100000
+    001000
+    100001
+    ------
+    101001
+    
+    Побитовое не (~)
+    10100 (^)
+    11111
+    -----
+    01011
+
+    Исключающее или (^)
+
+    10001
+    10000
+    -----
+    00001
+
+    Побитовый сдвиг влево (<<)
+
+    1011
+    ----
+    0110
+
+    Побитовый сдвиг вправо (>>)
+
+    1011
+    ----
+    0101
+
+    Также есть такие же операторы с  присваиванием
+    a&=b
+    a|=b
+    a~=b
+    a^=b
+    a<<=b
+    a>>=b
+    */
+    Draw::Background();
+    
+    if (draw & /*100000 (2) --> (10)*/ CircleSquareP) Draw::CircleSquarePers (350, 420, 10, handsUpCircleSquarePers);
+
+    if (draw & SquareE)                               Draw::SquareEnemy      (400, 437, 10, handsUpSquareEmemy);
+
+    if (draw & TriangleP)                             Draw::TrianglePers     (250, 370, 8, inclineTrianglePers);    
+
+    if (draw & TriangleE)                             Draw::TriangleEnemy    (500, 370, 8, inclineTriangleEnemy);
+
+    if (draw & CircleLineP)                           Draw::CircleLinePers   (150, 420, 10, handsUpCircleLinePers, 2);
+
+    if (draw & CircleLineE)                           Draw::CircleLineEnemy  (600, 430, 10, handsUpCircleLineEnemy, 2);
+
+    txSetColour (TX_BLACK);
+    Draw::DrawText (text); 
+}
 void FinishScene (const char text[])
 {
     for ( int t = 0; t < 100; t++)
@@ -608,6 +669,168 @@ void FinishScene (const char text[])
         txSleep (100);
     }
 }
+
+//handsUp принимает значения от 0 до 5(чем больше значение чем ниже руки)
+void CircleSquarePers (int x, int y, int scale, int handsUp)
+{
+//100pix 20loops= 100/20=5pix/loop
+    int lengthAdd = 0;
+
+    txSetFillColor (TX_BLUE);
+    txCircle    (x, y, scale);
+    txSetFillColor (TX_GREEN);
+    txLine      (x, y + scale, x, y + 1.5*scale);
+
+    txRectangle (x - scale, y + 1.5*scale, x + scale, y + 5*scale);
+
+    if (handsUp == 3 || handsUp == 4 || handsUp == 2 || handsUp == 1)
+    {
+       lengthAdd = 6;
+    }
+    txLine      (x - scale, y + 3 * scale, x - 1.6 * scale - lengthAdd * 0.3 * scale, y + (handsUp % 6) * scale);//hands
+    txLine      (x + scale, y + 3 * scale, x + 1.6 * scale + lengthAdd * 0.3 * scale, y + (handsUp % 6) * scale);
+
+    txLine      (x - 0.4 * scale, y + 5 * scale, x - 0.6 * scale, y + 8 * scale);
+    txLine      (x + 0.4 * scale, y + 5 * scale, x + 0.6 * scale, y + 8 * scale);
+}
+
+void SquareEnemy (int x, int y, int scale, int handsUp)
+{
+    int lengthAdd = 0;
+
+    txSetFillColor (TX_RED);
+    txRectangle (x - 0.6*scale, y - 0.6 * scale, x + 0.6 * scale, y + 0.6 * scale);
+    txLine      (x, y + 0.6 * scale, x, y + 1.5 * scale);
+
+    txRectangle (x - scale, y + 1.5 * scale, x + scale, y + 5 * scale);
+
+    if (handsUp == 3 || handsUp == 4 || handsUp == 2 || handsUp == 1)
+    {
+       lengthAdd = 6;
+    }
+
+    txLine      (x - scale, y + 3*scale, x - 1.6*scale - lengthAdd * 0.3 * scale, y + (handsUp % 6) * scale);
+    txLine      (x + scale, y + 3*scale, x + 1.6*scale + lengthAdd * 0.3 * scale, y + (handsUp % 6) * scale);
+
+    txLine      (x - 0.4*scale, y + 5*scale, x - 0.6*scale, y + 6.5*scale);
+    txLine      (x + 0.4*scale, y + 5*scale, x + 0.6*scale, y + 6.5*scale);
+}
+
+//headRight отчечает за качание головы, 2- середина, меньше двух вниз левой частью, больше двух вниз правой частью
+void TrianglePers (int x, int y, int scale, int headRight)
+{
+    int inclineL = 0;
+    int inclineR = 0;
+    if ((headRight % 6) > 2)
+    {
+        inclineL =   ROUND ((headRight % 6) * 0.3 * scale);
+        inclineR = ROUND (- (headRight % 6) * 0.3 * scale);
+    }
+
+    if ((headRight % 6) < 2)
+    {
+        inclineL = ROUND (- (headRight % 6) * 0.3 * scale);
+        inclineR = ROUND (  (headRight % 6) * 0.3 * scale);
+    }
+
+    txSetFillColour (TX_YELLOW);
+    POINT pointsHead[3]=  { {x-(5*scale) - 2 * scale + ((headRight % 6) * scale), y - inclineL},
+                            {x+(5*scale) - 2 * scale + ((headRight % 6) * scale), y - inclineR}, { x, y+4*scale} };
+    txPolygon ( pointsHead, 3 );
+    txLine (x, y+4*scale, x, y+6*scale);
+    txSetFillColour (TX_MAGENTA);
+    POINT pointsBody[3] = { { x, y+6*scale }, { x-3*scale, y+14*scale }, {x+3*scale, y+14*scale } };
+    txPolygon ( pointsBody, 3 );
+    txLine ( x-(1*scale) , y+14*scale, x-(2*scale), y+16*scale);
+    txLine ( x+(1*scale) , y+14*scale, x+(2*scale), y+16*scale);
+
+
+}
+
+void TriangleEnemy (int x, int y, int scale, int headRight)
+    {
+        int inclineL = 0;
+        int inclineR = 0;
+        if ((headRight % 6) > 2)
+        {
+            inclineL =   ROUND ((headRight % 6) * 0.3 * scale);
+            inclineR = ROUND (- (headRight % 6) * 0.3 * scale);
+        }
+
+        if ((headRight % 6) < 2)
+        {
+            inclineL = ROUND (- (headRight % 6) * 0.3 * scale);
+            inclineR =   ROUND ((headRight % 6) * 0.3 * scale);
+        }
+
+        txSetFillColour (TX_GREY);
+        POINT pointsHead[3]=  { {x - (4*scale) - 2 * scale + ((headRight % 6) * scale), y - inclineL}, {x + (6*scale) -  2 * scale + ((headRight % 6) * scale), y - inclineR},  { x, y+4*scale} };
+        txPolygon ( pointsHead, 3 );
+        txLine (x, y+4*scale, x, y+6*scale);
+        txSetFillColour (TX_RED);
+        POINT pointsBody[3] = { { x, y+6*scale }, { x-4*scale, y+14*scale }, {x+2*scale, y+14*scale } };
+        txPolygon ( pointsBody, 3 );
+        txLine ( x-(2*scale) , y+14*scale, x-(3*scale), y+16*scale);
+        txLine ( x , y+14*scale, x+(1*scale), y+16*scale);
+    }
+
+//по умолчанию handsUp-5 (0 - 5), legsUp-2 (0 - 3);
+void CircleLinePers (int x, int y, int scale, int handsUp, int legsUp)
+{
+      int lengthAdd = 0;
+      int legsLengthAdd = 0;
+
+      txSetFillColour (TX_LIGHTCYAN);
+      txCircle (x, y, scale);
+      txSetColour (TX_ORANGE);
+      txLine (x, y+scale, x, y+5*scale);
+
+      if (handsUp == 3 || handsUp == 4 || handsUp == 2 || handsUp==1)
+      {
+           lengthAdd = 6;
+      }
+
+      if (legsUp % 3 < 2)
+      {
+          legsLengthAdd = 5;
+      }
+
+      txLine (x, y + 2 * scale, x - (1 * scale) - lengthAdd * 0.3 * scale, y + (handsUp % 6) * scale);
+      txLine (x, y + 2 * scale, x + (1 * scale) + lengthAdd * 0.3 * scale, y + (handsUp % 6) * scale);
+
+      txLine (x, y + 5 * scale, x - (1 * scale) - legsLengthAdd * 0.1 * scale, y + 6 * scale + (legsUp % 3) * scale);
+      txLine (x, y + 5 * scale, x + (1 * scale) + legsLengthAdd * 0.1 * scale, y + 6 * scale + (legsUp % 3) * scale);
+}
+
+// handsup-4, legsUp -2(default)
+void CircleLineEnemy (int x, int y, int scale, int handsUp, int legsUp)
+{
+      int lenghtAdd = 0;
+      int legsLengthAdd = 0;
+
+      txSetFillColour (TX_RED);
+      txCircle (x, y, scale);
+      txSetColour (TX_PINK);
+      txLine (x, y+scale, x, y+5*scale);
+
+      if (handsUp == 3 || handsUp == 1 || handsUp == 0 || handsUp == 2)
+      {
+           lenghtAdd = 6;
+      }
+
+      if (legsUp % 3 < 2)
+      {
+          legsLengthAdd = 5;
+      }
+
+      txLine (x, y + (1 * scale), (x - (1 * scale) -( lenghtAdd * 0.3 * scale)), y + (handsUp % 5) * scale);
+      txLine (x, y + (1 * scale), x + (1 * scale) + lenghtAdd * 0.3 * scale, y + (handsUp % 5) * scale);
+
+      txLine (x, y + 5 * scale, x - (1 * scale) - legsLengthAdd * 0.1 * scale, y + 7 * scale);
+      txLine (x, y + 5 * scale, x + (1 * scale) + legsLengthAdd * 0.1 * scale, y + 7 * scale);
+}
+
+
 }
 
 namespace Move
@@ -633,7 +856,7 @@ void MoveTriangle (int trianglePersY, int triangleEnemyY, int v, int scale, int 
         Draw::Background();
         Draw::CircleSquarePers (350, 420, 10, incline);
         Draw::SquareEnemy      (390, 437, 10, incline);
-        Draw::TrianglePers  (10 + v * t, trianglePersY, scale, 1 + (t % 3));
+        Draw::TrianglePers  ( 10 + v * t, trianglePersY,  scale, 1 + (t % 20));
         Draw::TriangleEnemy (790 - v * t, triangleEnemyY, scale, 1 + (t % 3));
 
         txSleep (100);
